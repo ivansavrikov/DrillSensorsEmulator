@@ -7,4 +7,22 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Assets\Fonts\MontserratRegular.TTF" />
+    <None Remove="Resources\Images\Close.png" />
+    <None Remove="Resources\Images\Maximize.png" />
+    <None Remove="Resources\Images\Minimize.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GMap.NET.WinPresentation" Version="2.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Fonts\MontserratRegular.TTF" />
+    <Resource Include="Resources\Images\Close.png" />
+    <Resource Include="Resources\Images\Maximize.png" />
+    <Resource Include="Resources\Images\Minimize.png" />
+  </ItemGroup>
+
 </Project>
