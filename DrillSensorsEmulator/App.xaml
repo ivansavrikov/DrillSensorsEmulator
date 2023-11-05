@@ -3,19 +3,22 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DrillSensorsEmulator"
-    StartupUri="MainWindow.xaml">
+    StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
 
-        <FontFamily x:Key="Montserrat">pack://application:,,,/DrillSensorsEmulator;component/Assets/Fonts/#Montserrat</FontFamily>
+        <FontFamily x:Key="MontserratRegular">pack://application:,,,/DrillSensorsEmulator;component/Assets/Fonts/#Montserrat Regular</FontFamily>
+        <FontFamily x:Key="MontserratExtraLight">pack://application:,,,/DrillSensorsEmulator;component/Assets/Fonts/#Montserrat ExtraLight</FontFamily>
+        <FontFamily x:Key="MontserratBoldItalic">pack://application:,,,/DrillSensorsEmulator;component/Assets/Fonts/#Montserrat Bold Italic</FontFamily>
+        <FontFamily x:Key="MontserratThin">pack://application:,,,/DrillSensorsEmulator;component/Assets/Fonts/#Montserrat Thin Italic</FontFamily>
 
-        <Style x:Key="MyButtonStyle" TargetType="Button">
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="LightGray" />
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="16" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Margin" Value="0" />
             <Setter Property="Padding" Value="0,0,0,0" />
-            <Setter Property="FontFamily" Value="{StaticResource Montserrat}" />
+            <Setter Property="FontFamily" Value="{StaticResource MontserratRegular}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -43,7 +46,28 @@
             </Setter>
         </Style>
 
+        <Style x:Key="LabelStyle" TargetType="Label">
+            <Setter Property="Foreground" Value="LightGray" />
+            <Setter Property="FontFamily" Value="{StaticResource MontserratRegular}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Width" Value="Auto" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
 
-
+        <Style x:Key="EmuPropTextBox" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="{StaticResource MontserratRegular}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Foreground" Value="LightGray" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CaretBrush" Value="LightGray" />
+            <Setter Property="BorderBrush" Value="Gray" />
+            <Setter Property="SelectionBrush" Value="#FF818181" />
+            <Setter Property="Margin" Value="0,0,0,0" />
+            <Setter Property="Padding" Value="0,0,0,0" />
+        </Style>
     </Application.Resources>
 </Application>

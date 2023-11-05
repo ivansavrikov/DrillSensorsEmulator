@@ -8,21 +8,33 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\MontserratBold.TTF" />
+    <None Remove="Assets\Fonts\MontserratBoldItalic.TTF" />
+    <None Remove="Assets\Fonts\MontserratExtraLight.TTF" />
     <None Remove="Assets\Fonts\MontserratRegular.TTF" />
-    <None Remove="Resources\Images\Close.png" />
-    <None Remove="Resources\Images\Maximize.png" />
-    <None Remove="Resources\Images\Minimize.png" />
+    <None Remove="Assets\Fonts\MontserratThinItalic.TTF" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="GMap.NET.WinPresentation" Version="2.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Fonts\MontserratBold.TTF" />
+    <Resource Include="Assets\Fonts\MontserratBoldItalic.TTF" />
+    <Resource Include="Assets\Fonts\MontserratExtraLight.TTF" />
     <Resource Include="Assets\Fonts\MontserratRegular.TTF" />
-    <Resource Include="Resources\Images\Close.png" />
-    <Resource Include="Resources\Images\Maximize.png" />
-    <Resource Include="Resources\Images\Minimize.png" />
+    <Resource Include="Assets\Fonts\MontserratThinItalic.TTF" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>
