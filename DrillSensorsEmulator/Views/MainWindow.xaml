@@ -104,29 +104,18 @@
             Background="Black">
 
             <Button
-                x:Name="BtnShowPositionPanel"
+                x:Name="BtnEmulatedParametersPanel"
                 Width="Auto"
                 Margin="10,0,0,0"
                 Padding="10,0,10,0"
-                Click="BtnShowPositionPanel_Click"
-                Content="Position"
+                Click="BtnShowEmulatedParametersPanel_Click"
+                Content="Emulated parameters"
                 Style="{StaticResource MenuButtonStyle}" />
 
             <Button
                 Width="Auto"
                 Padding="10,0,10,0"
-                Content="Fuel"
-                Style="{StaticResource MenuButtonStyle}" />
-
-            <Button
-                Width="Auto"
-                Padding="10,0,10,0"
-                Content="Other"
-                Style="{StaticResource MenuButtonStyle}" />
-
-            <Button
-                Width="Auto"
-                Padding="10,0,10,0"
+                Click="ChangeMapProvider_Click"
                 Content="Map"
                 Style="{StaticResource MenuButtonStyle}" />
 
@@ -148,101 +137,180 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel
-                x:Name="PositionPanel"
-                Width="Auto"
-                Background="Transparent"
-                Orientation="Vertical"
+            <Grid
+                Name="EmulatedParametersPanel"
+                Grid.Row="0"
+                Grid.Column="0"
                 Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="200" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-                <DockPanel Width="300" Margin="10,30,10,5">
-                    <Label
-                        Margin="5,0,0,0"
-                        Content="Latitude"
-                        DockPanel.Dock="Left"
-                        Style="{StaticResource LabelStyle}" />
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
+
+                    <StackPanel
+                        Grid.Row="0"
+                        Width="Auto"
+                        Background="Transparent"
+                        Orientation="Vertical"
+                        Visibility="Visible">
+
+                        <DockPanel Width="300" Margin="10,30,10,5">
+                            <Label
+                                Margin="5,0,0,0"
+                                Content="Latitude"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource LabelStyle}" />
+
+                            <Border
+                                Width="150"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                Background="Black"
+                                CornerRadius="5"
+                                DockPanel.Dock="Right">
+                                <TextBox
+                                    x:Name="tbLat"
+                                    Width="150"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                                    Background="Transparent"
+                                    DockPanel.Dock="Right"
+                                    IsReadOnly="False"
+                                    MaxLength="10"
+                                    PreviewKeyDown="TextBox_PreviewKeyDown"
+                                    PreviewTextInput="Lat_PreviewTextInput"
+                                    Style="{StaticResource EmuPropTextBox}" />
+                            </Border>
+                        </DockPanel>
+
+                        <DockPanel Width="300" Margin="10,5,10,5">
+                            <Label
+                                Margin="5,0,0,0"
+                                Content="Longitude"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource LabelStyle}" />
+                            <Border
+                                Width="150"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                Background="Black"
+                                CornerRadius="5"
+                                DockPanel.Dock="Right">
+                                <TextBox
+                                    x:Name="tbLon"
+                                    Width="150"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                                    Background="Transparent"
+                                    DockPanel.Dock="Right"
+                                    IsReadOnly="False"
+                                    MaxLength="11"
+                                    PreviewKeyDown="TextBox_PreviewKeyDown"
+                                    PreviewTextInput="Lon_PreviewTextInput"
+                                    Style="{StaticResource EmuPropTextBox}" />
+                            </Border>
+                        </DockPanel>
+
+                        <DockPanel Width="300" Margin="10,5,10,5">
+                            <Label
+                                Margin="5,0,0,0"
+                                Content="Fuel"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource LabelStyle}" />
+                            <Border
+                                Width="150"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                Background="Black"
+                                CornerRadius="5"
+                                DockPanel.Dock="Right">
+                                <TextBox
+                                    Width="150"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                                    Background="Transparent"
+                                    DockPanel.Dock="Right"
+                                    IsReadOnly="True"
+                                    MaxLength="5"
+                                    Style="{StaticResource EmuPropTextBox}"
+                                    Text="value" />
+                            </Border>
+                        </DockPanel>
+
+                        <DockPanel Width="300" Margin="10,400,10,5">
+                            <Label
+                                Margin="5,0,0,0"
+                                Content="Property"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource LabelStyle}" />
+                            <Border
+                                Width="150"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                Background="Black"
+                                CornerRadius="5"
+                                DockPanel.Dock="Right">
+                                <TextBox
+                                    Width="150"
+                                    Height="30"
+                                    HorizontalAlignment="Right"
+                                    Background="Transparent"
+                                    DockPanel.Dock="Right"
+                                    IsReadOnly="True"
+                                    MaxLength="5"
+                                    Style="{StaticResource EmuPropTextBox}"
+                                    Text="value" />
+                            </Border>
+                        </DockPanel>
+                    </StackPanel>
+
+                </ScrollViewer>
+
+                <StackPanel
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    Orientation="Vertical">
 
                     <Border
-                        Width="150"
+                        Width="100"
                         Height="30"
-                        HorizontalAlignment="Right"
+                        Margin="5,5,5,5"
+                        HorizontalAlignment="Center"
                         Background="Black"
-                        CornerRadius="5"
-                        DockPanel.Dock="Right">
-                        <TextBox
-                            x:Name="tbLat"
-                            Width="150"
-                            Height="30"
-                            HorizontalAlignment="Right"
+                        CornerRadius="5">
+                        <Button
+                            x:Name="btnSendPosition"
+                            Padding="5,5,5,5"
                             Background="Transparent"
-                            DockPanel.Dock="Right"
-                            IsReadOnly="False"
-                            MaxLength="10"
-                            PreviewKeyDown="TextBox_PreviewKeyDown"
-                            PreviewTextInput="Lat_PreviewTextInput"
-                            Style="{StaticResource EmuPropTextBox}" />
+                            Click="BtnSendPosition_Click"
+                            Content="Send"
+                            Style="{StaticResource MenuButtonStyle}" />
                     </Border>
-                </DockPanel>
 
-                <DockPanel Width="300" Margin="10,5,10,5">
-                    <Label
-                        Margin="5,0,0,0"
-                        Content="Longitude"
-                        DockPanel.Dock="Left"
-                        Style="{StaticResource LabelStyle}" />
                     <Border
-                        Width="150"
+                        Width="100"
                         Height="30"
-                        HorizontalAlignment="Right"
+                        Margin="5"
+                        HorizontalAlignment="Center"
                         Background="Black"
-                        CornerRadius="5"
-                        DockPanel.Dock="Right">
-                        <TextBox
-                            x:Name="tbLon"
-                            Width="150"
-                            Height="30"
-                            HorizontalAlignment="Right"
+                        CornerRadius="5">
+                        <Button
+                            x:Name="btnAutoSendMode"
+                            Padding="5,5,5,5"
                             Background="Transparent"
-                            DockPanel.Dock="Right"
-                            IsReadOnly="False"
-                            MaxLength="11"
-                            PreviewKeyDown="TextBox_PreviewKeyDown"
-                            PreviewTextInput="Lon_PreviewTextInput"
-                            Style="{StaticResource EmuPropTextBox}" />
+                            Click="BtnAutoSendMode_Click"
+                            Content="Auto"
+                            Style="{StaticResource MenuButtonStyle}" />
                     </Border>
-                </DockPanel>
 
-                <Border
-                    Width="100"
-                    Height="30"
-                    Margin="5,55,5,5"
-                    HorizontalAlignment="Center"
-                    Background="Black"
-                    CornerRadius="5">
-                    <Button
-                        x:Name="btnSendPosition"
-                        Padding="5,5,5,5"
-                        Background="Transparent"
-                        Click="BtnSendPosition_Click"
-                        Content="Send"
-                        Style="{StaticResource MenuButtonStyle}" />
-                </Border>
+                </StackPanel>
 
-                <Border
-                    Width="100"
-                    Height="30"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    Background="Black"
-                    CornerRadius="5">
-                    <Button
-                        x:Name="btnAutoSendMode"
-                        Padding="5,5,5,5"
-                        Background="Transparent"
-                        Content="Auto"
-                        Style="{StaticResource MenuButtonStyle}" Click="BtnAutoSendMode_Click" />
-                </Border>
-            </StackPanel>
+            </Grid>
 
             <gmap:GMapControl
                 x:Name="Map"

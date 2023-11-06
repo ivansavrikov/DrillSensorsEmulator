@@ -116,9 +116,9 @@ namespace DrillSensorsEmulator.Views
         }
         #endregion
 
-        private void BtnShowPositionPanel_Click(object sender, RoutedEventArgs e)
+        private void BtnShowEmulatedParametersPanel_Click(object sender, RoutedEventArgs e)
         {
-            PositionPanel.Visibility = PositionPanel.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+            EmulatedParametersPanel.Visibility = EmulatedParametersPanel.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void Lat_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -198,6 +198,24 @@ namespace DrillSensorsEmulator.Views
         private void BtnAutoSendMode_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Еще не реализовано");
+        }
+
+        private int _changeMapProviderClick = 0;
+        private void ChangeMapProvider_Click(object sender, RoutedEventArgs e)
+        {
+            if (_changeMapProviderClick % 3 == 0)
+            {
+                Map.MapProvider = GoogleHybridMapProvider.Instance;
+            }
+            else if (_changeMapProviderClick % 3 == 1)
+            {
+                Map.MapProvider = GoogleMapProvider.Instance;
+            }
+            else
+            {
+                Map.MapProvider = GoogleSatelliteMapProvider.Instance;
+            }
+            _changeMapProviderClick++;
         }
     }
 }
