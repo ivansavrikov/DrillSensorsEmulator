@@ -32,5 +32,23 @@ namespace DrillSensorsEmulator.Core
                 }
             }
         }
+
+        public static List<DrillMachine> GetDrillingMachines()
+        {
+            try
+            {
+                var drillMachines = new List<DrillMachine>();
+                using (var context = new RitnavSystemForDrillMachinesContext())
+                {
+                    drillMachines = context.DrillMachines.ToList();
+                }
+                return drillMachines;
+            }
+            catch
+            {
+                MessageBox.Show($"Сервер недоступен, проверьте подключение к интернету");
+                throw;
+            }
+        }
     }
 }

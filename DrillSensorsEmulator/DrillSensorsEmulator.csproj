@@ -8,9 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\MontserratBlackItalic.TTF" />
     <None Remove="Assets\Fonts\MontserratBold.TTF" />
     <None Remove="Assets\Fonts\MontserratBoldItalic.TTF" />
     <None Remove="Assets\Fonts\MontserratExtraLight.TTF" />
+    <None Remove="Assets\Fonts\MontserratExtraLightItalic.TTF" />
     <None Remove="Assets\Fonts\MontserratRegular.TTF" />
     <None Remove="Assets\Fonts\MontserratThinItalic.TTF" />
   </ItemGroup>
@@ -26,15 +28,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Fonts\MontserratBlackItalic.TTF" />
     <Resource Include="Assets\Fonts\MontserratBold.TTF" />
     <Resource Include="Assets\Fonts\MontserratBoldItalic.TTF" />
     <Resource Include="Assets\Fonts\MontserratExtraLight.TTF" />
+    <Resource Include="Assets\Fonts\MontserratExtraLightItalic.TTF" />
     <Resource Include="Assets\Fonts\MontserratRegular.TTF" />
     <Resource Include="Assets\Fonts\MontserratThinItalic.TTF" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Folder Include="Resources\Icons\" />
   </ItemGroup>
 
 </Project>

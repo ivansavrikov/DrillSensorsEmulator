@@ -31,23 +31,26 @@ namespace DrillSensorsEmulator.Core
 
         }
 
-        public static string ToSimplePositionMessage(double lat, double lon, int id)
+        public static string ToSimplePositionMessage(PointLatLng position, int id)
         {
             DateTime timeNow = DateTime.Now;
-            return 
+            
+            return
                 $"{id}," +
                 $"{timeNow}," +
-                $"{Math.Round(lat, 6).ToString().Replace(',', '.')}," +
-                $"{Math.Round(lon, 6).ToString().Replace(',', '.')}";
+                $"{Math.Round(position.Lat, 10).ToString().Replace(',', '.')}," +
+                $"{Math.Round(position.Lng, 10).ToString().Replace(',', '.')}";
         }
 
-        public static PointLatLng GenerateRandomPoint(double currentLat, double currentLon)
+        public static PointLatLng GenerateRandomPoint(PointLatLng point)
         {
+            var currentLat = point.Lat;
+            var currentLon = point.Lng;
 
             // Радиус смещения (в градусах)
             double radiusInDegrees = 0.0100;
 
-            Random random = new Random();
+            Random random = new();
 
             // Генерирация случайного смещения в пределах радиуса
             double latitudeOffset = (random.NextDouble() - 0.5) * radiusInDegrees;
