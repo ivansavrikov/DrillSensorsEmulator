@@ -27,10 +27,12 @@ namespace DrillSensorsEmulator.Markers
                 if (_isCurrent)
                 {
                     _body.MarkerView.Fill = new SolidColorBrush(Colors.IndianRed);
+                    ZIndex = int.MaxValue;
                 }
                 else
                 {
                     _body.MarkerView.Fill = new SolidColorBrush(Colors.LightGray);
+                    ZIndex = int.MinValue + 2000;
                 }
             }
         }
@@ -135,7 +137,7 @@ namespace DrillSensorsEmulator.Markers
 
         private void MarkerLoaded(object? sender, RoutedEventArgs e)
         {   
-            Offset = new Point(-_body.Height / 2, -_body.Width / 2);
+            Offset = new Point(-_body.Width / 2, -_body.Height);
         }
 
     }

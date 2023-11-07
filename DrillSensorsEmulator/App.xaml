@@ -100,6 +100,10 @@
                                 <Setter Property="Background" Value="Gray" />
                                 <Setter Property="Foreground" Value="White" />
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" Value="IndianRed" />
+                                <Setter Property="Foreground" Value="LightGray" />
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -129,6 +133,10 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="Gray" />
                                 <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" Value="IndianRed" />
+                                <Setter Property="Foreground" Value="LightGray" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

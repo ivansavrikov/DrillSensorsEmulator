@@ -1,5 +1,4 @@
 ﻿using DrillSensorsEmulator.Database;
-using DrillSensorsEmulator.Markers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,23 +12,23 @@ namespace DrillSensorsEmulator.Core
 {
     static class ServerOperations
     {
-        public static async Task SendDrillPosition(string coordinates)
+        public static async Task<bool> SendDrillPosition(string coordinates)
         {
-            Uri serverUri = new Uri("wss://socketsbay.com/wss/v2/1/demo/"); // Заменить
-            //Uri serverUri = new Uri("ws://109.174.29.40:6686/ws/1");
+            Uri serverUri = new Uri("wss://НеСуществуюшийСервер"); // Для тестирования
+            //Uri serverUri = new Uri("wss://socketsbay.com/wss/v2/1/demo/"); // Для тестирования
+            //Uri serverUri = new Uri("ws://109.174.29.40:6686/ws/1"); // Основной
 
-            using (ClientWebSocket clientWebSocket = new())
+            using ClientWebSocket clientWebSocket = new();
+            try
             {
-                try
-                {
-                    await clientWebSocket.ConnectAsync(serverUri, CancellationToken.None);
-                    byte[] buffer = Encoding.UTF8.GetBytes(coordinates);
-                    await clientWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при отправке данных: {ex.Message}");
-                }
+                await clientWebSocket.ConnectAsync(serverUri, CancellationToken.None);
+                byte[] buffer = Encoding.UTF8.GetBytes(coordinates);
+                await clientWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 

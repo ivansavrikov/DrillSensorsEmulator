@@ -148,6 +148,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="200" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -719,7 +720,7 @@
                                     Width="100"
                                     Height="30"
                                     Margin="5"
-                                    Click="btnSendPosition_Click_1"
+                                    Click="BtnSendPosition_Click"
                                     Content="send"
                                     Style="{StaticResource CommandButtonStyle}" />
 
@@ -769,6 +770,19 @@
 
                 </Border>
 
+                <Border
+                    x:Name="statusMonitorPanel"
+                    Grid.Row="2"
+                    Height="60"
+                    Background="Black"
+                    BorderBrush="#FF4E4E4E"
+                    BorderThickness="0,1,1,0"
+                    Visibility="Visible">
+                    <Label
+                        x:Name="lSendingStatus"
+                        Content=""
+                        Style="{StaticResource LabelStyle}" />
+                </Border>
             </Grid>
 
             <gmap:GMapControl
@@ -786,13 +800,13 @@
                 x:Name="lvDrills"
                 Grid.Row="0"
                 Grid.Column="2"
-                Width="400"
+                Width="300"
                 Height="Auto"
                 Margin="0,0,0,0"
                 d:ItemsSource="{d:SampleData ItemCount=1}"
-                Background="#1E1E1E"
-                BorderBrush="Transparent"
-                BorderThickness="0"
+                Background="Transparent"
+                BorderBrush="#FF4E4E4E"
+                BorderThickness="1,1,0,0"
                 Visibility="Collapsed">
 
                 <ListView.Style>
@@ -821,8 +835,8 @@
                         <Border
                             Height="80"
                             Margin="5,5,5,5"
-                            Background="#242424"
-                            CornerRadius="2">
+                            Background="Black"
+                            CornerRadius="5">
                             <Grid>
 
                                 <StackPanel

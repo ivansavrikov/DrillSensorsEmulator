@@ -11,11 +11,9 @@ using System.Globalization;
 using DrillSensorsEmulator.Core;
 using System.Windows.Threading;
 using DrillSensorsEmulator.Database;
-using GMap.NET.WindowsPresentation;
 using System.Data.Entity;
-using System.Windows.Shapes;
-using System.Collections;
-using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace DrillSensorsEmulator.Views
 {
@@ -24,18 +22,18 @@ namespace DrillSensorsEmulator.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DispatcherTimer _timer;
-        private DrillMarker _currentMarker;
+        private readonly DispatcherTimer _timer;
+        private DrillMarker _currentDrillMarker;
         internal DrillMarker CurrentDrillMarker //
         {
             get
             {
-                return _currentMarker;
+                return _currentDrillMarker;
             }
             set
             {
-                _currentMarker = value;
-                btnDrills.Content = _currentMarker.Drill.Title;
+                _currentDrillMarker = value;
+                btnDrills.Content = _currentDrillMarker.Drill.Title;
 
                 foreach(var marker in Map.Markers)
                 {
@@ -45,10 +43,11 @@ namespace DrillSensorsEmulator.Views
                     }
                 }
 
-                _currentMarker.IsCurrent = true;
-                ShowDrillPosition(_currentMarker);
+                _currentDrillMarker.IsCurrent = true;
+                ShowDrillPosition(_currentDrillMarker);
             }
         }
+
         private int _changeMapProviderClicks = 0;
 
         public MainWindow()
@@ -75,6 +74,7 @@ namespace DrillSensorsEmulator.Views
             Map.ShowCenter = false;
             Map.Position = new PointLatLng(54.986676, 82.949524); //
         }
+
         private void LoadDrillMarkers()
         {
             var drills = ServerOperations.GetDrillingMachines();
@@ -108,8 +108,7 @@ namespace DrillSensorsEmulator.Views
             }
             catch
             {
-                MessageBox.Show("Ошибка загрузки буровых установок!", "ошибка", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                MessageBox.Show("Ошибка загрузки полигонов", "ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -123,7 +122,7 @@ namespace DrillSensorsEmulator.Views
                 var point = new PointLatLng(hole.Latitude, hole.Longitude);
                 var marker = new HoleMarker(point, Map);
                 Map.Markers.Add(marker);
-            } 
+            }
         }
 
         private void Marker_MouseMove(object sender, MouseEventArgs e)
@@ -131,11 +130,11 @@ namespace DrillSensorsEmulator.Views
             ShowDrillPosition(CurrentDrillMarker);
         }
 
-        private void Marker_MouseRightUp(object sender, MouseButtonEventArgs e)
+        private async void Marker_MouseRightUp(object sender, MouseButtonEventArgs e)
         {
             if (tbtnAutoSendPosition.IsChecked == true)
             {
-                _ = ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine)); //
+                await Task.Run(() => StartSending());
             }
         }
 
@@ -166,6 +165,8 @@ namespace DrillSensorsEmulator.Views
                     }
                 }
             }
+
+            Map.Position = CurrentDrillMarker.Position;
         }
         
         //Отображение широты и долготы бура в соответсвующих текстбоксах 
@@ -215,7 +216,7 @@ namespace DrillSensorsEmulator.Views
             }
         }
 
-        private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
@@ -234,7 +235,7 @@ namespace DrillSensorsEmulator.Views
 
                     if (tbtnAutoSendPosition.IsChecked == true)
                     {
-                        _ = ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine)); //
+                        await Task.Run(() => StartSending());
                     }
                 }
                 catch (System.Exception ex)
@@ -244,11 +245,6 @@ namespace DrillSensorsEmulator.Views
 
                 e.Handled = true;
             }
-        }
-
-        private void BtnSendPosition_Click(object sender, RoutedEventArgs e)
-        {
-            _ = ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine));
         }
 
         /// <summary>
@@ -266,14 +262,14 @@ namespace DrillSensorsEmulator.Views
             _changeMapProviderClicks++;
         }
 
-        private void AutoMove_TimerTick(object? sender, EventArgs e)
+        private async void AutoMove_TimerTick(object? sender, EventArgs e)
         {
             CurrentDrillMarker.Position = Coordinates.GenerateRandomPoint(CurrentDrillMarker.Position);
             Map.Position = CurrentDrillMarker.Position;
 
             if (tbtnAutoSendPosition.IsChecked == true)
             {
-                _ = ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine)); //
+                await Task.Run(() => StartSending());
             }
 
             ShowDrillPosition(CurrentDrillMarker);
@@ -287,6 +283,89 @@ namespace DrillSensorsEmulator.Views
         private void AutoSendMode_Unchecked(object sender, RoutedEventArgs e)
         {
             _timer.Stop();
+        }
+
+        async void BtnSendPosition_Click(object sender, RoutedEventArgs e)
+        {
+            await Task.Run(() => StartSending());
+        }
+
+        private async Task StartSending()
+        {
+            var currentDrillPosition = new PointLatLng(CurrentDrillMarker.Drill.Latitude, CurrentDrillMarker.Drill.Longitude);
+
+            if (CurrentDrillMarker.Position.Lat == currentDrillPosition.Lat && CurrentDrillMarker.Position.Lng == currentDrillPosition.Lng)
+            {
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    lSendingStatus.Content = "the drill didn't move!";
+                });
+
+                await Task.Delay(500);
+
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    lSendingStatus.Content = "";
+                });
+                return;
+            }
+
+            bool? isEnabledAutoSendingMode = false;
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                isEnabledAutoSendingMode = tbtnAutoSendPosition.IsChecked;
+
+                lSendingStatus.Foreground = new SolidColorBrush(Colors.LightGray);
+                lSendingStatus.Content = "waiting...";
+                tbtnAutoSendPosition.IsChecked = false;
+                tbtnAutoSendPosition.IsEnabled = false;
+                btnSendPosition.IsEnabled = false;
+            });
+
+            bool success = await ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine));
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                if (success)
+                {
+                    lSendingStatus.Foreground = new SolidColorBrush(Colors.MediumSeaGreen);
+                    lSendingStatus.Content = "successfully.";
+                }
+                else
+                {
+                    lSendingStatus.Foreground = new SolidColorBrush(Colors.IndianRed);
+                    lSendingStatus.Content = "error.";
+                }
+            });
+
+            await Task.Delay(500);
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                lSendingStatus.Foreground = new SolidColorBrush(Colors.LightGray);
+                lSendingStatus.Content = "";
+                tbtnAutoSendPosition.IsEnabled = true;
+                tbtnAutoSendPosition.IsChecked = isEnabledAutoSendingMode;
+                btnSendPosition.IsEnabled = true;
+            });
+
+            await Task.Delay(500); //время серверу на обработку
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                SyncWithDatabase();
+            });
+        }
+
+        private void BtnSyncDatabase_Click(object sender, RoutedEventArgs e)
+        {
+            SyncWithDatabase();
+        }
+
+        private void btnDrills_Click(object sender, RoutedEventArgs e)
+        {
+            lvDrills.Visibility = lvDrills.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
         }
 
         #region Custom Top Panel
@@ -305,20 +384,5 @@ namespace DrillSensorsEmulator.Views
             this.WindowState = WindowState.Minimized;
         }
         #endregion
-
-        private void btnSendPosition_Click_1(object sender, RoutedEventArgs e)
-        {
-            _ = ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine)); //
-        }
-
-        private void BtnSyncDatabase_Click(object sender, RoutedEventArgs e)
-        {
-            SyncWithDatabase();
-        }
-
-        private void btnDrills_Click(object sender, RoutedEventArgs e)
-        {
-            lvDrills.Visibility = lvDrills.Visibility == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
-        }
     }
 }
