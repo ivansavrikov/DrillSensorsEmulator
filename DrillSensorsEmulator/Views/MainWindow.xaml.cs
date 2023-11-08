@@ -323,7 +323,7 @@ namespace DrillSensorsEmulator.Views
                 btnSendPosition.IsEnabled = false;
             });
 
-            bool success = await ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine));
+            bool success = await ServerOperations.SendDrillPosition($"{CurrentDrillMarker.Drill.IddrillingMachine}{Coordinates.ToGPGGA(CurrentDrillMarker.Position)}");
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {

@@ -14,8 +14,8 @@ namespace DrillSensorsEmulator.Core
     {
         public static async Task<bool> SendDrillPosition(string coordinates)
         {
-            Uri serverUri = new Uri("wss://НеСуществуюшийСервер"); // Для тестирования
-            //Uri serverUri = new Uri("wss://socketsbay.com/wss/v2/1/demo/"); // Для тестирования
+            //Uri serverUri = new Uri("wss://НеСуществуюшийСервер"); // Для тестирования
+            Uri serverUri = new Uri("wss://socketsbay.com/wss/v2/1/demo/"); // Для тестирования
             //Uri serverUri = new Uri("ws://109.174.29.40:6686/ws/1"); // Основной
 
             using ClientWebSocket clientWebSocket = new();

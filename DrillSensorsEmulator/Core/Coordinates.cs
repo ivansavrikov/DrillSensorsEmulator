@@ -6,29 +6,84 @@ namespace DrillSensorsEmulator.Core
 {
     static class Coordinates
     {
-        public static string ToGPGGA(double lat, double lon, int id) //не полный GPGGA, для задания достаточно
+        public static string ToGPGGA(PointLatLng position)
         {
-            string latDir = lat >= 0 ? "N" : "S";
-            string lonDir = lon >= 0 ? "E" : "W";
+            string utcTime;
+            string latitude; //
+            string latitudeDirection;
+            string longitude; //
+            string longitudeDirection;
+            int fixQuality = 8; //Simulator mode
+            int satellitesUsed = 0;
+            double? hdop = null; //optimal 1.0
+            double? altitude = null;
+            string? altitudeUnits = null; // = "M"
+            double? geoidSeparation = null; 
+            string? geoidSeparationUnits = null; // = "M"
+            double? ageOfDifferentialData = null;
+            int? differentialReferenceStationID = null;
 
-            lat = Math.Abs(lat);
-            lon = Math.Abs(lon);
+            latitudeDirection = position.Lat >= 0 ? "N" : "S";
+            longitudeDirection = position.Lng >= 0 ? "E" : "W";
 
-            int latDegrees = (int)lat;
-            double latMinutes = (lat - latDegrees) * 60;
+            position.Lat = Math.Abs(position.Lat);
+            position.Lng = Math.Abs(position.Lng);
 
-            int lonDegrees = (int)lon;
-            double lonMinutes = (lon - lonDegrees) * 60;
+            int latDegrees = (int)position.Lat;
+            double latMinutes = (position.Lat - latDegrees) * 60;
 
-            DateTime timeNow = DateTime.Now;
+            int lonDegrees = (int)position.Lng;
+            double lonMinutes = (position.Lng - lonDegrees) * 60;
 
             CultureInfo cultureInfo = new CultureInfo("en-US"); //Для точки в качестве десятичного разделителя
-            
-            return
-                $"{id},$GPGGA,{timeNow.ToString("HHmmss.ff")}," +
-                $"{latDegrees}{latMinutes.ToString("00.0000", cultureInfo)},{latDir}," +
-                $"{lonDegrees}{lonMinutes.ToString("00.0000", cultureInfo)},{lonDir}";
+            latitude = $"{latDegrees}{latMinutes.ToString("00.0000", cultureInfo)}";
+            longitude = $"{lonDegrees}{lonMinutes.ToString("00.0000", cultureInfo)}";
 
+            DateTime timeNow = DateTime.Now;
+            utcTime = timeNow.ToString("HHmmss.ff");
+
+            string gpggaString = 
+                $"$GPGGA," +
+                $"{utcTime}," +
+                $"{latitude}," +
+                $"{latitudeDirection}," +
+                $"{longitude}," +
+                $"{longitudeDirection}," +
+                $"{fixQuality}," +
+                $"{satellitesUsed:00}," +
+                $"{hdop?.ToString("F1", cultureInfo)}," + //hdop = null
+                $"{altitude?.ToString("F1", cultureInfo)}," + //altitude = null
+                $"{altitudeUnits}," + //altitudeUnits = null
+                $"{geoidSeparation?.ToString("F1", cultureInfo)}," + //geoidSeparation = null
+                $"{geoidSeparationUnits}," + //geoidSeparationUnits = null
+                $"{ageOfDifferentialData:00}," + //ageOfDifferentialData = null
+                $"{differentialReferenceStationID:0000}*"; //differentialReferenceStationID = null
+
+            return CalculateNMEAChecksum(gpggaString);
+        }
+
+        private static string CalculateNMEAChecksum(string sentence)
+        {
+            // Находим начало строки (символ '$')
+            int startIndex = sentence.IndexOf('$');
+
+            // Находим конец строки (символ '*')
+            int endIndex = sentence.IndexOf('*');
+
+            string data = sentence.Substring(startIndex + 1, endIndex - startIndex - 1); // Извлекаем данные между '$' и '*'
+            byte checksum = 0;
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                checksum ^= (byte)data[i]; // Выполняем операцию XOR для каждого символа
+            }
+
+            // Форматируем результат как двузначное шестнадцатеричное число
+            string checksumHex = checksum.ToString("X2");
+
+            return $"{sentence}{checksumHex}";
+
+            return null; // В случае ошибки или отсутствия начала/конца строки
         }
 
         public static string ToSimplePositionMessage(PointLatLng position, int id)
@@ -37,7 +92,7 @@ namespace DrillSensorsEmulator.Core
             
             return
                 $"{id}," +
-                $"{timeNow}," +
+                $"{timeNow:HHmmss.ff}," +
                 $"{Math.Round(position.Lat, 10).ToString().Replace(',', '.')}," +
                 $"{Math.Round(position.Lng, 10).ToString().Replace(',', '.')}";
         }
