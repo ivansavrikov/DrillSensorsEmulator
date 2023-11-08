@@ -13,6 +13,7 @@
     MinHeight="480"
     BorderBrush="#FF4E4E4E"
     BorderThickness="1"
+    Icon="\Resources\Icons\logo.ico"
     WindowStartupLocation="CenterScreen"
     WindowState="Normal"
     mc:Ignorable="d">

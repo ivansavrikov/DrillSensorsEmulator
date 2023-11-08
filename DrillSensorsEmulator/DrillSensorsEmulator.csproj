@@ -15,6 +15,7 @@
     <None Remove="Assets\Fonts\MontserratExtraLightItalic.TTF" />
     <None Remove="Assets\Fonts\MontserratRegular.TTF" />
     <None Remove="Assets\Fonts\MontserratThinItalic.TTF" />
+    <None Remove="Resources\Icons\logo.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,10 +36,7 @@
     <Resource Include="Assets\Fonts\MontserratExtraLightItalic.TTF" />
     <Resource Include="Assets\Fonts\MontserratRegular.TTF" />
     <Resource Include="Assets\Fonts\MontserratThinItalic.TTF" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resources\Icons\" />
+    <Resource Include="Resources\Icons\logo.ico" />
   </ItemGroup>
 
 </Project>
