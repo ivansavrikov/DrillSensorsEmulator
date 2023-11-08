@@ -13,6 +13,8 @@ using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Collections.Generic;
+using DrillSensorsEmulator.Database;
+using GMap.NET.WindowsPresentation;
 
 namespace DrillSensorsEmulator.Views
 {
@@ -67,23 +69,27 @@ namespace DrillSensorsEmulator.Views
 
             foreach(var marker in Map.Markers)
             {
-                if( marker is DrillMarker drillMarker)
+                if(marker is DrillMarker drillMarker)
                 {
                     drillMarkers.Add(drillMarker);
                 }
             }
 
-            CurrentDrillMarker = drillMarkers.Last();
+            if(drillMarkers.Count != 0)
+            {
+                CurrentDrillMarker = drillMarkers.Last();
+                Map.Position = CurrentDrillMarker.Position;
+            }
 
             lvDrills.ItemsSource = ServerOperations.GetDrillingMachines();
         }
         private void LoadMap()
         {
             GMaps.Instance.Mode = AccessMode.ServerAndCache;
-            Map.MapProvider = GoogleSatelliteMapProvider.Instance; //Сделать переключение
+            Map.MapProvider = GoogleSatelliteMapProvider.Instance;
             Map.DragButton = MouseButton.Left;
             Map.ShowCenter = false;
-            Map.Position = new PointLatLng(54.986676, 82.949524); //
+            Map.Position = new PointLatLng(54.986676, 82.949524);
         }
 
         private void LoadDrillMarkers()
@@ -107,7 +113,8 @@ namespace DrillSensorsEmulator.Views
             }
             catch
             {
-                MessageBox.Show("Ошибка загрузки буров", "ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Ошибка загрузки буров, отсутствует подключение к серверу", "ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
             }
         }
 
@@ -182,9 +189,11 @@ namespace DrillSensorsEmulator.Views
                 tbtnAutoSendPosition.IsChecked = false;
                 tbtnAutoSendPosition.IsEnabled = false;
                 btnSendPosition.IsEnabled = false;
+                tbtnAutoMove.IsChecked = false;
             });
 
-            bool success = await ServerOperations.SendDrillPosition($"{CurrentDrillMarker.Drill.IddrillingMachine}{Coordinates.ToGPGGA(CurrentDrillMarker.Position)}");
+            //bool success = await ServerOperations.SendDrillPosition($"{CurrentDrillMarker.Drill.IddrillingMachine}{Coordinates.ToGPGGA(CurrentDrillMarker.Position)}");
+            bool success = await ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine));
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -211,7 +220,7 @@ namespace DrillSensorsEmulator.Views
                 btnSendPosition.IsEnabled = true;
             });
 
-            await Task.Delay(500);
+            await Task.Delay(1500); //время на выполнение серверу
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -288,7 +297,7 @@ namespace DrillSensorsEmulator.Views
             // Предотвращаем ввод символов, которые нарушают формат
             if (!Regex.IsMatch(textBefore + e.Text + textAfter, @"^-?\d{0,2}(\.\d{0,6})?$"))
             {
-                e.Handled = true; // Предотвращаем ввод символа
+                e.Handled = true;
             }
         }
 
@@ -414,5 +423,22 @@ namespace DrillSensorsEmulator.Views
             this.WindowState = WindowState.Minimized;
         }
         #endregion
+
+        private void LvDrills_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var markers = Map.Markers.ToList();
+            foreach (var marker in markers)
+            {
+                if (typeof(DrillMarker) == marker.GetType())
+                {
+                    if (((DrillMarker)marker).Drill.IddrillingMachine == ((DrillMachine)lvDrills.SelectedItem).IddrillingMachine)
+                    {
+                        CurrentDrillMarker = (DrillMarker)marker;
+                        Map.Position = CurrentDrillMarker.Position;
+                        Map.Zoom = 18;
+                    }
+                }
+            }
+        }
     }
 }

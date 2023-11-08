@@ -16,13 +16,16 @@ namespace DrillSensorsEmulator.Core
         public static async Task<bool> SendDrillPosition(string coordinates)
         {
             //Uri serverUri = new Uri("wss://НеСуществуюшийСервер"); // Для тестирования
-            Uri serverUri = new Uri("wss://socketsbay.com/wss/v2/1/demo/"); // Для тестирования
-            //Uri serverUri = new Uri("ws://109.174.29.40:6686/ws/1"); // Основной
+            //Uri serverUri = new Uri("wss://socketsbay.com/wss/v2/1/demo/"); // Для тестирования
+            Uri serverUri = new Uri("ws://109.174.29.40:6686/ws/1"); // Основной
 
             using ClientWebSocket clientWebSocket = new();
             try
             {
-                await clientWebSocket.ConnectAsync(serverUri, CancellationToken.None);
+                var cancellationTokenSource = new CancellationTokenSource();
+                var timeoutTimer = new CancellationTokenSource(1*1000).Token;
+                using (var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token, timeoutTimer))
+                await clientWebSocket.ConnectAsync(serverUri, linkedTokenSource.Token);
                 byte[] buffer = Encoding.UTF8.GetBytes(coordinates);
                 await clientWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
                 return true;

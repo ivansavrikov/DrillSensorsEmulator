@@ -13,7 +13,6 @@
     MinHeight="480"
     BorderBrush="#FF4E4E4E"
     BorderThickness="1"
-    Icon="\Resources\Icons\logo.ico"
     WindowStartupLocation="CenterScreen"
     WindowState="Normal"
     mc:Ignorable="d">
@@ -366,6 +365,7 @@
                 Background="Transparent"
                 BorderBrush="#FF4E4E4E"
                 BorderThickness="1,1,0,0"
+                SelectionChanged="LvDrills_SelectionChanged"
                 Visibility="Collapsed">
 
                 <ListView.Style>

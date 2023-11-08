@@ -5,6 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Icons\logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,10 @@
     <None Remove="Assets\Fonts\MontserratRegular.TTF" />
     <None Remove="Assets\Fonts\MontserratThinItalic.TTF" />
     <None Remove="Resources\Icons\logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Icons\logo.ico" />
   </ItemGroup>
 
   <ItemGroup>

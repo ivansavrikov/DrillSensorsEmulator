@@ -64,23 +64,18 @@ namespace DrillSensorsEmulator.Core
 
         private static string CalculateNMEAChecksum(string sentence)
         {
-            // Находим начало строки (символ '$')
             int startIndex = sentence.IndexOf('$');
-
-            // Находим конец строки (символ '*')
             int endIndex = sentence.IndexOf('*');
 
-            string data = sentence.Substring(startIndex + 1, endIndex - startIndex - 1); // Извлекаем данные между '$' и '*'
+            string data = sentence.Substring(startIndex + 1, endIndex - startIndex - 1);
             byte checksum = 0;
 
             for (int i = 0; i < data.Length; i++)
             {
-                checksum ^= (byte)data[i]; // Выполняем операцию XOR для каждого символа
+                checksum ^= (byte)data[i];
             }
 
-            // Форматируем результат как двузначное шестнадцатеричное число
             string checksumHex = checksum.ToString("X2");
-
             return $"{sentence}{checksumHex}";
         }
 
