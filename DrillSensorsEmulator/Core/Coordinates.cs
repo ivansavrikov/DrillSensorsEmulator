@@ -82,8 +82,6 @@ namespace DrillSensorsEmulator.Core
             string checksumHex = checksum.ToString("X2");
 
             return $"{sentence}{checksumHex}";
-
-            return null; // В случае ошибки или отсутствия начала/конца строки
         }
 
         public static string ToSimplePositionMessage(PointLatLng position, int id)

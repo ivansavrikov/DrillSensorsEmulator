@@ -65,7 +65,7 @@ namespace DrillSensorsEmulator.Markers
         private void MarkerMouseDoubleClick(object? sender, MouseButtonEventArgs e)
         {
             _map.Position = Position;
-            _map.Zoom = 16;
+            _map.Zoom = 18;
         }
 
         private void MarkerMouseWheel(object? sender, MouseWheelEventArgs e)

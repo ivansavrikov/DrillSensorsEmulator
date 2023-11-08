@@ -1,6 +1,7 @@
 ﻿using DrillSensorsEmulator.Database;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
@@ -37,11 +38,49 @@ namespace DrillSensorsEmulator.Core
             try
             {
                 var drillMachines = new List<DrillMachine>();
-                using (var context = new RitnavSystemForDrillMachinesContext())
+                using (var db = new RitnavSystemForDrillMachinesContext())
                 {
-                    drillMachines = context.DrillMachines.ToList();
+                    drillMachines = db.DrillMachines.ToList();
                 }
                 return drillMachines;
+            }
+            catch
+            {
+                MessageBox.Show($"Сервер недоступен, проверьте подключение к интернету");
+                throw;
+            }
+        }
+
+        public static List<DrillPolygon> GetDrillPolygons()
+        {
+            try
+            {
+                var polygons = new List<DrillPolygon>();
+                using (var db = new RitnavSystemForDrillMachinesContext())
+                {
+                    polygons = db.DrillPolygons.ToList();
+                    db.CoordinatesDrillPolygons.Load();
+                }
+
+                return polygons;
+            }
+            catch
+            {
+                MessageBox.Show($"Сервер недоступен, проверьте подключение к интернету");
+                throw;
+            }
+        }
+
+        public static List<DrillHole> GetDrillHoles()
+        {
+            try
+            {
+                var holes = new List<DrillHole>();
+                using (var db = new RitnavSystemForDrillMachinesContext())
+                {
+                    holes = db.DrillHoles.ToList();
+                }
+                return holes;
             }
             catch
             {

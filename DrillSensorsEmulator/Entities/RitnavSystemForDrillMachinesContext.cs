@@ -25,8 +25,7 @@ public partial class RitnavSystemForDrillMachinesContext : DbContext
 
     public virtual DbSet<PositionsDrillMachine> PositionsDrillMachines { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
         => optionsBuilder.UseNpgsql("Server=109.174.29.40:5432; DataBase=RITNavSystemForDrillMachines;Integrated Security=false; User Id=Ivan;password=12345678");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
