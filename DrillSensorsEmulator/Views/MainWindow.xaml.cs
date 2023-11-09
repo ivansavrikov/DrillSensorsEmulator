@@ -250,13 +250,14 @@ namespace DrillSensorsEmulator.Views
             }
 
             Map.Position = CurrentDrillMarker.Position;
+
             try
             {
                 lvDrills.ItemsSource = ServerOperations.GetDrillingMachines();
             }
             catch
             {
-                MessageBox.Show("Error");
+                
             }
         }
 
