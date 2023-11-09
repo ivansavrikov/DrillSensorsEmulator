@@ -115,6 +115,7 @@ namespace DrillSensorsEmulator.Views
             {
                 MessageBox.Show("Ошибка загрузки буров, отсутствует подключение к серверу", "ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
+                return;
             }
         }
 
@@ -193,7 +194,7 @@ namespace DrillSensorsEmulator.Views
             });
 
             //bool success = await ServerOperations.SendDrillPosition($"{CurrentDrillMarker.Drill.IddrillingMachine}{Coordinates.ToGPGGA(CurrentDrillMarker.Position)}");
-            bool success = await ServerOperations.SendDrillPosition(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine));
+            bool success = await ServerOperations.SendMessageToServer(Coordinates.ToSimplePositionMessage(CurrentDrillMarker.Position, CurrentDrillMarker.Drill.IddrillingMachine));
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -440,11 +441,18 @@ namespace DrillSensorsEmulator.Views
             {
                 if (typeof(DrillMarker) == marker.GetType())
                 {
-                    if (((DrillMarker)marker).Drill.IddrillingMachine == ((DrillMachine)lvDrills.SelectedItem).IddrillingMachine)
+                    try
                     {
-                        CurrentDrillMarker = (DrillMarker)marker;
-                        Map.Position = CurrentDrillMarker.Position;
-                        Map.Zoom = 18;
+                        if (((DrillMarker)marker).Drill.IddrillingMachine == ((DrillMachine)lvDrills.SelectedItem).IddrillingMachine)
+                        {
+                            CurrentDrillMarker = (DrillMarker)marker;
+                            Map.Position = CurrentDrillMarker.Position;
+                            Map.Zoom = 18;
+                        }
+                    }
+                    catch
+                    {
+                        break;
                     }
                 }
             }

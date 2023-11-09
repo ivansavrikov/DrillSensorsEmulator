@@ -11,7 +11,7 @@ namespace DrillSensorsEmulator.Markers
     {
         public DrillMachine Drill { get; set; }
         private readonly GMapControl _map;
-        public DrillMarkerBody _body;
+        private DrillMarkerBody _body;
         private bool _isCurrent;
 
         public bool IsCurrent

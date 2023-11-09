@@ -13,26 +13,37 @@ namespace DrillSensorsEmulator.Core
 {
     static class ServerOperations
     {
-        public static async Task<bool> SendDrillPosition(string coordinates)
+        public static async Task<bool> SendMessageToServer(string message)
         {
-            //Uri serverUri = new Uri("wss://НеСуществуюшийСервер"); // Для тестирования
-            //Uri serverUri = new Uri("wss://socketsbay.com/wss/v2/1/demo/"); // Для тестирования
-            Uri serverUri = new Uri("ws://109.174.29.40:6686/ws/1"); // Основной
+            //Uri serverUri = new("wss://socketsbay.com/wss/v2/1/demo/"); // Для тестирования
+            //Uri serverUri = new("ws://109.174.29.40:6686/ws/1"); // Основной
+            Uri serverUri = new("wss://НеСуществуюшийСервер"); // Для тестирования
+            TimeSpan timeout = TimeSpan.FromSeconds(2);           
+            
+            CancellationTokenSource linkedTokenSource = 
+                CancellationTokenSource.CreateLinkedTokenSource(
+                    new CancellationTokenSource().Token,
+                    new CancellationTokenSource(timeout).Token);
 
-            using ClientWebSocket clientWebSocket = new();
-            try
+            using (ClientWebSocket clientWebSocket = new())
             {
-                var cancellationTokenSource = new CancellationTokenSource();
-                var timeoutTimer = new CancellationTokenSource(1*1000).Token;
-                using (var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token, timeoutTimer))
-                await clientWebSocket.ConnectAsync(serverUri, linkedTokenSource.Token);
-                byte[] buffer = Encoding.UTF8.GetBytes(coordinates);
-                await clientWebSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                return true;
-            }
-            catch
-            {
-                return false;
+                try
+                {
+                    await clientWebSocket.ConnectAsync(serverUri, linkedTokenSource.Token);
+                    byte[] buffer = Encoding.UTF8.GetBytes(message);
+
+                    await clientWebSocket.SendAsync(
+                        new ArraySegment<byte>(buffer),
+                        WebSocketMessageType.Text,
+                        true,
+                        linkedTokenSource.Token);
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
